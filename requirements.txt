@@ -3,9 +3,11 @@ blinker==1.9.0
 certifi==2024.8.30
 charset-normalizer==3.4.0
 click==8.1.7
+colorama==0.4.6
 coloredlogs==15.0.1
 Flask==3.1.0
 flatbuffers==24.3.25
+gunicorn==23.0.0
 humanfriendly==10.0
 idna==3.10
 imageio==2.36.0
@@ -28,6 +30,7 @@ platformdirs==4.3.6
 pooch==1.8.2
 protobuf==5.28.3
 PyMatting==1.1.13
+pyreadline3==3.5.4
 python-dotenv==1.0.1
 referencing==0.35.1
 rembg==2.0.59
