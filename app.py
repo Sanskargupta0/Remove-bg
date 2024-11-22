@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, send_file, render_template, after_this_request
-from rembg import remove
+from rembg import remove, new_session
 import io
 import os
 import zipfile
@@ -7,6 +7,11 @@ import requests
 from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file
+
+
+# Create a session for the lightweight model
+session = new_session(model_name="u2netp")
+
 
 app = Flask(__name__)
 
@@ -48,7 +53,7 @@ def remove_bg():
             continue
 
         input_image = file.read()
-        output_image = remove(input_image)
+        output_image = remove(input_image, session=session)
         output_buffer = io.BytesIO(output_image)
         output_buffer.seek(0)
 
