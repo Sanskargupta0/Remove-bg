@@ -199,7 +199,7 @@ docker run -p 5000:5000 -e UNSPLASH_ACCESS_KEY=your_key sanskargupta0/remove-bg:
 docker build -t remove-bg .
 
 # Run the container
-docker run -p 5000:5000 remove-bg
+docker run -p 5000:5000 -e UNSPLASH_ACCESS_KEY=your_key  remove-bg
 ```
 
 ### Docker Compose (Optional)
@@ -528,6 +528,30 @@ This application is perfect for:
 - **Storage**: 1GB free space (for model and temp files)
 - **CPU**: Multi-core processor recommended
 - **Network**: Internet connection for model download and sample images
+
+### 📸 Screenshots
+
+#### Home Page
+![Home Page](/screenshots/home-page.png)
+
+#### Upload Interface
+![Upload Interface](/screenshots/upload-interface.png)
+
+#### Before Processing
+![Before Processing](/screenshots/before-processing.png)
+
+#### After Processing - Background Removed
+![After Processing](/screenshots/after-processing.png)
+
+#### Batch Processing with Multiple Images
+![Batch Processing](/screenshots/batch-processing.png)
+
+#### Sample Images Feature
+![Sample Images](/screenshots/sample-images.png)
+
+#### Mobile Responsive View
+![Mobile View](/screenshots/mobile-view.png)
+
 
 ---
 
