@@ -1,40 +1,31 @@
 from flask import Flask, request, jsonify, send_file, render_template, after_this_request
 from rembg import remove, new_session
-import io
 import os
 import zipfile
+import tempfile
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()  # Load environment variables from .env file
-
-
-# Create a session for the lightweight model
-session = new_session(model_name="u2netp")
-
+load_dotenv()
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2MB max per file
 
-# Get Unsplash API key from environment variable
 UNSPLASH_ACCESS_KEY = os.getenv('UNSPLASH_ACCESS_KEY')
 
 @app.route('/')
 def index():
-    backend_url = request.host_url.rstrip('/')  # Get the current host URL
+    backend_url = request.host_url.rstrip('/')
     return render_template('index.html', backend_url=backend_url)
 
 @app.route('/get-random-images')
 def get_random_images():
     try:
-        # Fetch random headshot images from Unsplash
         url = f"https://api.unsplash.com/photos/random?query=headshot&count=4&client_id={UNSPLASH_ACCESS_KEY}"
         response = requests.get(url)
-        response.raise_for_status()  # Raise an exception for bad status codes
-
-        # Extract image URLs from the response
+        response.raise_for_status()
         images = response.json()
         image_urls = [img['urls']['regular'] for img in images]
-
         return jsonify(image_urls)
     except Exception as e:
         print(f"Error fetching images: {e}")
@@ -48,45 +39,53 @@ def remove_bg():
     files = request.files.getlist('images')
     output_files = []
 
+    temp_dir = tempfile.mkdtemp()
+
     for file in files:
         if file.filename == '':
             continue
 
-        input_image = file.read()
-        output_image = remove(input_image, session=session)
-        output_buffer = io.BytesIO(output_image)
-        output_buffer.seek(0)
+        try:
+            input_image = file.read()
+            output_image = remove(input_image, session=new_session(model_name='u2netp'))
+            output_path = os.path.join(temp_dir, f"output_{os.path.splitext(file.filename)[0]}.png")
+            with open(output_path, "wb") as f:
+                f.write(output_image)
+            output_files.append(output_path)
+        except Exception as e:
+            print(f"Error processing file {file.filename}: {e}")
+            continue
 
-        output_filename = f"output_{os.path.splitext(file.filename)[0]}.png"
-        with open(output_filename, "wb") as f:
-            f.write(output_buffer.getvalue())
-        output_files.append(output_filename)
+    if len(output_files) == 0:
+        return jsonify({"error": "No valid images processed"}), 400
 
     if len(output_files) == 1:
         @after_this_request
         def cleanup_single_file(response):
             try:
                 os.remove(output_files[0])
+                os.rmdir(temp_dir)
             except Exception as e:
-                print(f"Error removing file: {e}")
+                print(f"Cleanup error: {e}")
             return response
         return send_file(output_files[0], mimetype='image/png', as_attachment=True)
 
-    zip_filename = "processed_images.zip"
-    with zipfile.ZipFile(zip_filename, 'w') as zipf:
-        for output_file in output_files:
-            zipf.write(output_file)
-            os.remove(output_file)
+    zip_path = os.path.join(temp_dir, "processed_images.zip")
+    with zipfile.ZipFile(zip_path, 'w') as zipf:
+        for path in output_files:
+            zipf.write(path, os.path.basename(path))
+            os.remove(path)
 
     @after_this_request
     def cleanup_zip_file(response):
         try:
-            os.remove(zip_filename)
+            os.remove(zip_path)
+            os.rmdir(temp_dir)
         except Exception as e:
-            print(f"Error removing file: {e}")
+            print(f"Cleanup error: {e}")
         return response
 
-    return send_file(zip_filename, mimetype='application/zip', as_attachment=True)
+    return send_file(zip_path, mimetype='application/zip', as_attachment=True)
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))

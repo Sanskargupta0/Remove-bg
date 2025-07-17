@@ -31,164 +31,209 @@
         transform: rotate(360deg);
       }
     }
+
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .glass-effect {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .dark .glass-effect {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .hover-scale {
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .hover-scale:hover {
+      transform: scale(1.02);
+    }
+
+    @media (max-width: 640px) {
+      .mobile-padding {
+        padding: 1rem;
+      }
+    }
   </style>
 </head>
 
 <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 min-h-screen">
-  <div class="container mx-auto p-6">
-    <header class="text-center mb-8">
-      <h1 class="text-4xl font-bold">remove<span class="text-blue-500">bg</span></h1>
-      <p class="text-gray-600 dark:text-gray-400 mt-2">Remove background from your images instantly</p>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+    <header class="text-center mb-6 sm:mb-8 lg:mb-12">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold">remove<span class="text-blue-500">bg</span></h1>
+      <p class="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base">Remove background from your images instantly</p>
     </header>
 
-    <main class="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-8 max-w-2xl mx-auto">
-      <div class="space-y-8">
+    <main class="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto hover-scale">
+      <div class="space-y-6 sm:space-y-8">
         <!-- Drag and Drop Section -->
-        <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
-          <div id="dropZone" class="relative p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <p class="text-gray-500 dark:text-gray-300">Drag and drop images here or click to upload</p>
+        <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 sm:p-6 text-center hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
+          <div id="dropZone" class="relative p-4 sm:p-6 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+            <div class="flex flex-col items-center space-y-3">
+              <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+              </svg>
+              <p class="text-gray-500 dark:text-gray-300 text-sm sm:text-base">Drag and drop images here or click to upload</p>
+              <p class="text-xs text-gray-400">Support for multiple images (JPG, PNG, WEBP)</p>
+            </div>
             <input type="file" id="fileInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" multiple accept="image/*">
           </div>
-          <div id="previewContainer" class="mt-4 grid grid-cols-3 gap-4"></div>
+          <div id="previewContainer" class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"></div>
         </div>
 
         <!-- Upload Button -->
         <div class="text-center">
-          <button id="uploadButton" class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors">
-            Upload Image(s)
+          <button id="uploadButton" class="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-8 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+            <span class="flex items-center justify-center space-x-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+              </svg>
+              <span>Upload & Process Image(s)</span>
+            </span>
           </button>
         </div>
 
         <!-- Processing Status -->
-        <div id="processingStatus" class="hidden text-center">
+        <div id="processingStatus" class="hidden text-center py-8">
           <div class="loader mx-auto h-12 w-12 border-4 rounded-full"></div>
           <p class="mt-4 text-gray-600 dark:text-gray-400">Processing your image(s)...</p>
+          <p class="mt-2 text-sm text-gray-500">This may take a few moments</p>
         </div>
 
         <!-- Result Section -->
         <div id="result" class="hidden space-y-4">
-          <h3 class="text-lg font-semibold">Processed Image(s)</h3>
+          <h3 class="text-lg sm:text-xl font-semibold text-center">✨ Processed Image(s)</h3>
           <div id="downloadSection" class="flex justify-center">
             <!-- Download link will be inserted here -->
           </div>
         </div>
 
         <!-- Example Images Section -->
-        <div class="space-y-4">
-          <h3 class="text-lg font-semibold text-center">No image? Try one of these</h3>
-          <div id="exampleImages" class="grid grid-cols-4 gap-4">
+        <div class="space-y-4 sm:space-y-6">
+          <h3 class="text-lg sm:text-xl font-semibold text-center">No image? Try one of these samples</h3>
+          <div id="exampleImages" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             <!-- Example images will be loaded here -->
           </div>
         </div>
       </div>
     </main>
-    <div
-      class="mt-5 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col justify-between">
+    <div class="mt-8 sm:mt-12 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col justify-between">
 
       <!-- Header Section -->
-      <header class="p-5 bg-blue-500 text-white text-center">
-        <h1 class="text-2xl font-bold">Background Remover API</h1>
-        <p class="text-sm mt-2">Easily remove image backgrounds using our API Made Using <a href="https://github.com/danielgatis/rembg.git" target="_blank" style="color: black;" class="underline font-bold text-2xl">rembg</a></p>
+      <header class="p-4 sm:p-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center">
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold">Background Remover API</h1>
+        <p class="text-xs sm:text-sm lg:text-base mt-2">Easily remove image backgrounds using our API Made Using <a href="https://github.com/danielgatis/rembg.git" target="_blank" style="color: #FEF3C7;" class="underline font-bold hover:text-yellow-200 transition-colors">rembg</a></p>
       </header>
 
       <!-- Instructions Section -->
-      <main class="p-5">
-        <section>
-          <h2 class="text-xl font-bold mb-4">How to Use the API</h2>
+      <main class="p-4 sm:p-6 lg:p-8 flex-grow">
+        <section class="max-w-4xl mx-auto">
+          <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">How to Use the API</h2>
 
-          <h3 class="text-lg font-semibold mt-6">1. Remove Background</h3>
-          <p>Upload a single or multiple images to remove the background:</p>
-          <pre class="bg-gray-800 text-white p-3 rounded overflow-auto">
-      POST /remove-bg
-      Content-Type: multipart/form-data
-      Body: 
-      - images: One or more image files
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 shadow-lg mb-6 sm:mb-8">
+            <h3 class="text-lg sm:text-xl font-semibold mt-0 mb-4">1. Remove Background</h3>
+            <p class="mb-4 text-sm sm:text-base">Upload a single or multiple images to remove the background:</p>
+            <pre class="bg-gray-800 text-white p-3 sm:p-4 rounded overflow-auto text-xs sm:text-sm">
+POST /remove-bg
+Content-Type: multipart/form-data
+Body: 
+- images: One or more image files
             </pre>
-
-          <h3 class="text-lg font-semibold mt-6">Node.js Request Example</h3>
-          <div class="relative">
-            <p>Here's how to make a request to the API using Node.js:</p>
-            <div class="relative">
-              <pre id="nodeRequest" class="bg-gray-800 text-white p-3 rounded overflow-auto">
-                  const axios = require('axios');
-                  const FormData = require('form-data');
-                  const fs = require('fs');
-
-                  async function removeBackground() {
-                    const form = new FormData();
-                    form.append('images', fs.createReadStream('path/to/your/image.jpg'));
-
-                    try {
-                      const response = await axios.post('{{backend_url}}/remove-bg', form, {
-                        headers: {
-                          ...form.getHeaders()
-                        },
-                        responseType: 'arraybuffer'
-                      });
-
-                      fs.writeFileSync('output.png', response.data);
-                      console.log('Background removed successfully! File saved as output.png');
-                    } catch (error) {
-                      console.error('Error:', error.response?.data || error.message);
-                    }
-                  }
-
-                  removeBackground();
-                </pre>
-              <button onclick="copyToClipboard('nodeRequest')"
-                class="absolute top-2 right-2 bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 16h8m-4-4h4m-8-4h8m-6 8H5m14 4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2z" />
-                </svg>
-                Copy
-              </button>
-            </div>
           </div>
 
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 shadow-lg">
+            <h3 class="text-lg sm:text-xl font-semibold mt-0 mb-4">Node.js Request Example</h3>
+            <div class="relative">
+              <p class="mb-4 text-sm sm:text-base">Here's how to make a request to the API using Node.js:</p>
+              <div class="relative">
+                <pre id="nodeRequest" class="bg-gray-800 text-white p-3 sm:p-4 rounded overflow-auto text-xs sm:text-sm leading-relaxed">const axios = require('axios');
+const FormData = require('form-data');
+const fs = require('fs');
+
+async function removeBackground() {
+  const form = new FormData();
+  form.append('images', fs.createReadStream('path/to/your/image.jpg'));
+
+  try {
+    const response = await axios.post('{{backend_url}}/remove-bg', form, {
+      headers: {
+        ...form.getHeaders()
+      },
+      responseType: 'arraybuffer'
+    });
+
+    fs.writeFileSync('output.png', response.data);
+    console.log('Background removed successfully! File saved as output.png');
+  } catch (error) {
+    console.error('Error:', error.response?.data || error.message);
+  }
+}
+
+removeBackground();</pre>
+                <button onclick="copyToClipboard('nodeRequest')"
+                  class="absolute top-2 right-2 bg-green-500 hover:bg-green-600 text-white py-1 px-2 sm:py-2 sm:px-3 rounded flex items-center gap-1 text-xs sm:text-sm transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 16h8m-4-4h4m-8-4h8m-6 8H5m14 4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2z" />
+                  </svg>
+                  <span class="hidden sm:inline">Copy</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </section>
       </main>
 
       <!-- Footer Section -->
-      <footer class="p-4 bg-gray-800 text-white text-center">
-        <p>Made with <span class="text-red-500">&hearts;</span> by <a href="https://github.com/Sanskargupta0"
-            target="_blank" class="underline">Sanskar Gupta</a></p>
+      <footer class="p-4 sm:p-6 bg-gray-800 text-white text-center">
+        <p class="text-sm sm:text-base">Made with <span class="text-red-500">&hearts;</span> by <a href="https://github.com/Sanskargupta0"
+            target="_blank" class="underline hover:text-blue-300 transition-colors">Sanskar Gupta</a></p>
       </footer>
 
     </div>
 
     <!-- Theme Toggle -->
-    <div class="fixed bottom-6 right-6">
+    <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
       <button id="themeToggle"
-        class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full shadow-lg hover:shadow-xl transition-shadow"
+        class="bg-white dark:bg-gray-700 p-2 sm:p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-600 hover:scale-110"
         aria-label="Toggle theme">
-        <svg id="sunIcon" class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="sunIcon" class="w-5 h-5 sm:w-6 sm:h-6 hidden dark:block text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
-        <svg id="moonIcon" class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="moonIcon" class="w-5 h-5 sm:w-6 sm:h-6 block dark:hidden text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
       </button>
     </div>
-     <div class="fixed top-6 right-6">
-       <div class="group relative">
-         <button>
-           <a class="text-decoration-none " href="https://github.com/Sanskargupta0" target="_blank">
-         <svg stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" class="w-8 hover:scale-125 duration-200 hover:stroke-blue-500"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-             </a>
-         </button>
-         <a class="text-decoration-none " href="https://github.com/Sanskargupta0" target="_blank">
-         <span class="absolute top-[2.5rem] left-[50%] -translate-x-[50%] 
-         z-20 origin-left scale-0 px-3 rounded-lg border 
-         border-gray-300 bg-white py-2 text-sm font-bold
-         shadow-md transition-all duration-300 ease-in-out 
-         group-hover:scale-100 dark:bg-black">GitHub<span>
-           </a>
-       </span></span></div>
-     </div>
+    
+    <!-- GitHub Link -->
+    <div class="fixed top-4 right-4 sm:top-6 sm:right-6 z-50">
+      <div class="group relative">
+        <button>
+          <a class="text-decoration-none block" href="https://github.com/Sanskargupta0" target="_blank">
+            <svg stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" class="w-6 h-6 sm:w-8 sm:h-8 hover:scale-125 duration-200 hover:stroke-blue-500 text-gray-700 dark:text-gray-300">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg>
+          </a>
+        </button>
+        <a class="text-decoration-none block" href="https://github.com/Sanskargupta0" target="_blank">
+          <span class="absolute top-[2.5rem] left-[50%] -translate-x-[50%] 
+          z-20 origin-left scale-0 px-2 py-1 sm:px-3 sm:py-2 rounded-lg border 
+          border-gray-300 bg-white dark:bg-gray-800 dark:border-gray-600 text-xs sm:text-sm font-bold
+          shadow-md transition-all duration-300 ease-in-out 
+          group-hover:scale-100 text-gray-900 dark:text-gray-100 whitespace-nowrap">GitHub</span>
+        </a>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -196,9 +241,10 @@
     function copyToClipboard(elementId) {
       const text = document.getElementById(elementId).innerText;
       navigator.clipboard.writeText(text).then(() => {
-        alert('Copied to clipboard!');
+        showAlert('Code copied to clipboard!', 'info');
       }).catch((err) => {
-        alert('Failed to copy text: ' + err);
+        console.error('Copy failed:', err);
+        showAlert('Failed to copy code. Please select and copy manually.', 'error');
       });
     }
 
@@ -259,30 +305,39 @@
       const reader = new FileReader();
       reader.onload = (event) => {
         const div = document.createElement('div');
-        div.className = 'relative';
+        div.className = 'relative group hover:scale-105 transition-transform duration-200';
 
         const img = document.createElement('img');
         img.src = event.target.result;
         img.alt = file.name;
-        img.className = 'w-full h-24 object-cover rounded-lg';
+        img.className = 'w-full h-20 sm:h-24 object-cover rounded-lg shadow-md';
 
         const removeIcon = document.createElement('button');
-        removeIcon.className = 'absolute top-2 right-2 bg-red-500 text-white p-1 rounded-[50%] hover:bg-red-600';
+        removeIcon.className = 'absolute -top-2 -right-2 bg-red-500 text-white w-6 h-6 sm:w-7 sm:h-7 rounded-full hover:bg-red-600 transition-colors flex items-center justify-center text-sm font-bold shadow-lg';
         removeIcon.innerHTML = '&times;';
-        removeIcon.onclick = () => {
+        removeIcon.onclick = (e) => {
+          e.stopPropagation();
           selectedFiles = selectedFiles.filter(f => f.name !== file.name);
           previewContainer.removeChild(div);
         };
 
+        const fileName = document.createElement('p');
+        fileName.className = 'text-xs text-gray-500 dark:text-gray-400 mt-1 truncate';
+        fileName.textContent = file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name;
+
         div.appendChild(img);
         div.appendChild(removeIcon);
+        div.appendChild(fileName);
         previewContainer.appendChild(div);
       };
       reader.readAsDataURL(file);
     }
 
     uploadButton.addEventListener('click', async () => {
-      if (selectedFiles.length === 0) return alert('No images selected!');
+      if (selectedFiles.length === 0) {
+        showAlert('Please select at least one image!', 'warning');
+        return;
+      }
 
       uploadButton.disabled = true;
       processingStatus.classList.remove('hidden');
@@ -303,8 +358,19 @@
           const link = document.createElement('a');
           link.href = url;
           link.download = blob.type === 'application/zip' ? 'processed_images.zip' : 'processed_image.png';
-          link.className = 'bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition-colors';
-          link.innerText = 'Download Processed Image(s)';
+          link.className = 'inline-flex items-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105';
+          
+          const downloadIcon = document.createElement('svg');
+          downloadIcon.className = 'w-5 h-5';
+          downloadIcon.innerHTML = '<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15l3-3m0 0l-3-3m3 3h-12m0 0l3 3m-3-3l3-3"/>';
+          downloadIcon.setAttribute('fill', 'none');
+          downloadIcon.setAttribute('viewBox', '0 0 24 24');
+          
+          const downloadText = document.createElement('span');
+          downloadText.textContent = 'Download Processed Image(s)';
+          
+          link.appendChild(downloadIcon);
+          link.appendChild(downloadText);
 
           downloadSection.innerHTML = '';
           downloadSection.appendChild(link);
@@ -317,31 +383,56 @@
           throw new Error('Processing failed');
         }
       } catch (error) {
-        downloadSection.innerHTML = '<p class="text-red-500">An error occurred while processing the image(s).</p>';
-        result.classList.remove('hidden');
+        console.error('Upload error:', error);
+        showAlert('An error occurred while processing the image(s). Please try again.', 'error');
       } finally {
         uploadButton.disabled = false;
         processingStatus.classList.add('hidden');
       }
     });
 
+    // Alert system
+    function showAlert(message, type = 'info') {
+      const alertDiv = document.createElement('div');
+      const bgColor = type === 'error' ? 'bg-red-500' : type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
+      
+      alertDiv.className = `fixed top-4 left-1/2 transform -translate-x-1/2 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg z-50 max-w-sm mx-auto text-center transition-all duration-300`;
+      alertDiv.textContent = message;
+      
+      document.body.appendChild(alertDiv);
+      
+      // Animate in
+      setTimeout(() => alertDiv.classList.add('opacity-100'), 100);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        alertDiv.classList.add('opacity-0');
+        setTimeout(() => document.body.removeChild(alertDiv), 300);
+      }, 3000);
+    }
+
     // Example Images with Random Headshots
     const exampleImages = document.getElementById('exampleImages');
     const fetchRandomHeadshots = async () => {
       try {
+        // Show loading state
+        exampleImages.innerHTML = Array.from({length: 4}, () => 
+          '<div class="animate-pulse bg-gray-300 dark:bg-gray-600 h-20 sm:h-24 lg:h-28 rounded-lg"></div>'
+        ).join('');
+
         const response = await fetch('/get-random-images');
         const images = await response.json();
 
-        exampleImages.innerHTML = ''; // Clear existing images
+        exampleImages.innerHTML = ''; // Clear loading state
 
         images.forEach(imageUrl => {
           const imgContainer = document.createElement('div');
-          imgContainer.className = 'relative group cursor-pointer';
+          imgContainer.className = 'relative group cursor-pointer hover:scale-105 transition-transform duration-200';
 
           const img = document.createElement('img');
           img.src = imageUrl;
           img.alt = 'Sample Headshot';
-          img.className = 'w-full h-24 object-cover rounded-lg transition-transform transform group-hover:scale-105';
+          img.className = 'w-full h-20 sm:h-24 lg:h-28 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-all duration-200';
 
           // Add loading skeleton
           img.style.backgroundColor = '#e2e8f0';
@@ -349,7 +440,19 @@
             img.style.backgroundColor = 'transparent';
           };
 
+          // Add overlay for better UX
+          const overlay = document.createElement('div');
+          overlay.className = 'absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-lg flex items-center justify-center';
+          
+          const playIcon = document.createElement('svg');
+          playIcon.className = 'w-6 h-6 sm:w-8 sm:h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200';
+          playIcon.innerHTML = '<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1M9 16v-2a2 2 0 012-2h2a2 2 0 012 2v2M12 3v1m0 16v1m9-9h-1M4 12H3"/>';
+          playIcon.setAttribute('fill', 'none');
+          playIcon.setAttribute('viewBox', '0 0 24 24');
+          
+          overlay.appendChild(playIcon);
           imgContainer.appendChild(img);
+          imgContainer.appendChild(overlay);
           exampleImages.appendChild(imgContainer);
 
           imgContainer.addEventListener('click', async () => {
@@ -380,8 +483,19 @@
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = 'processed_sample.png';
-                link.className = 'bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition-colors';
-                link.innerText = 'Download Processed Image';
+                link.className = 'inline-flex items-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105';
+                
+                const downloadIcon = document.createElement('svg');
+                downloadIcon.className = 'w-5 h-5';
+                downloadIcon.innerHTML = '<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15l3-3m0 0l-3-3m3 3h-12m0 0l3 3m-3-3l3-3"/>';
+                downloadIcon.setAttribute('fill', 'none');
+                downloadIcon.setAttribute('viewBox', '0 0 24 24');
+                
+                const downloadText = document.createElement('span');
+                downloadText.textContent = 'Download Sample Result';
+                
+                link.appendChild(downloadIcon);
+                link.appendChild(downloadText);
 
                 downloadSection.innerHTML = '';
                 downloadSection.appendChild(link);
@@ -389,8 +503,8 @@
                 uploadButton.disabled = false;
               }
             } catch (error) {
-              downloadSection.innerHTML = '<p class="text-red-500">An error occurred while processing the sample image.</p>';
-              result.classList.remove('hidden');
+              console.error('Sample processing error:', error);
+              showAlert('Failed to process sample image. Please try again.', 'error');
               uploadButton.disabled = false;
             } finally {
               // Re-enable the click
@@ -402,7 +516,7 @@
         });
       } catch (error) {
         console.error('Error fetching random images:', error);
-        exampleImages.innerHTML = '<p class="text-red-500 col-span-4 text-center">Failed to load sample images. Please refresh the page.</p>';
+        exampleImages.innerHTML = '<div class="col-span-2 sm:col-span-3 lg:col-span-4 text-center py-8"><p class="text-red-500 text-sm sm:text-base">Failed to load sample images.</p><button onclick="fetchRandomHeadshots()" class="mt-2 text-blue-500 hover:text-blue-600 underline text-sm">Try again</button></div>';
       }
     };
 
