@@ -18,6 +18,10 @@ def index():
     backend_url = request.host_url.rstrip('/')
     return render_template('index.html', backend_url=backend_url)
 
+@app.route('/health')
+def health_check():
+    return jsonify({"status": "ok"}), 200
+
 @app.route('/get-random-images')
 def get_random_images():
     try:
